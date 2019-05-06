@@ -9,7 +9,7 @@ class Canvas extends React.Component {
        urlArray: [],
         currentUrl:  '',
         prevFrame: '',
-        speed: 20
+        speed: 200
 
     }   
     this.lastX = 0;
