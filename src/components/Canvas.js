@@ -31,7 +31,7 @@ class Canvas extends React.Component {
 handleMouseMove = e => {  
   if(!this.state.isDrawing) return;
   const rect = this.canvas.getBoundingClientRect();
-  this.ctx.strokeStyle = `hsl(0, 100%, 50%)`;
+  this.ctx.strokeStyle = `hsl(${this.state.hue}, 100%, 50%)`;
   this.ctx.beginPath();
   // // start from
   this.ctx.moveTo(this.lastX, this.lastY);
