@@ -13,6 +13,11 @@ export default function ToolBox(props) {
     return props.activeTool === name ? "yellow" : "#e3e3e3";
   };
 
+  const handleClick = e => {
+    e.preventDefault();
+    props.setActiveTool(e.target.name)
+  }
+
   return (
     <div className="tool-box">
       <button
@@ -23,9 +28,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Pencil"
         name="pencil"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Pencil">
+        <span className="icon-wrapper" role="img" aria-label="Pencil">
           <FontAwesomeIcon icon={faPencilAlt} />
         </span>
       </button>
@@ -37,9 +42,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Line"
         name="line"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Line">
+        <span className="icon-wrapper" role="img" aria-label="Line">
           <FontAwesomeIcon icon={faArrowsAltH} />
         </span>
       </button>
@@ -51,9 +56,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Fill Rectangle"
         name="fillRect"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Fill Rectangle">
+        <span className="icon-wrapper" role="img" aria-label="Fill Rectangle">
           ⬛
         </span>
       </button>
@@ -65,9 +70,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Draw Rectangle"
         name="drawRect"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Draw Rectangle">
+        <span className="icon-wrapper" role="img" aria-label="Draw Rectangle">
           ⬜
         </span>
       </button>
@@ -79,9 +84,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Eraser"
         name="eraser"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Eraser">
+        <span className="icon-wrapper" role="img" aria-label="Eraser">
           <FontAwesomeIcon icon={faEraser} />
         </span>
       </button>
@@ -93,9 +98,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Eye Dropper"
         name="eyeDropper"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Eye Dropper">
+        <span className="icon-wrapper" role="img" aria-label="Eye Dropper">
           <FontAwesomeIcon icon={faEyeDropper} />
         </span>
       </button>
@@ -107,9 +112,9 @@ export default function ToolBox(props) {
         className="tool-button"
         title="Move"
         name="move"
-        onClick={props.setActiveTool}
+        onClick={handleClick}
       >
-        <span role="img" aria-label="Move">
+        <span className="icon-wrapper" role="img" aria-label="Move">
           <FontAwesomeIcon icon={faArrowsAlt} />
         </span>
       </button>

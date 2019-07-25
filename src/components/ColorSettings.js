@@ -10,17 +10,17 @@ export default function ColorBox(props) {
   const { hex: primaryHex, opacity: primaryOpacity } = toHex(props.primaryRgba);
   const { hex: secondaryHex, opacity: secondaryOpacity } = toHex(props.secondaryRgba);
 
-  const primaryColorHandler = ev => {
-    let value = toRgba(ev.target.value, primaryOpacity);
+  const handlePrimaryColor = e => {
+    let value = toRgba(e.target.value, primaryOpacity);
     props.setColor("primary", value)
   }
 
-  const secondaryColorHandler = ev => {
-    let value = toRgba(ev.target.value, secondaryOpacity);
+  const handleSecondaryColor = e => {
+    let value = toRgba(e.target.value, secondaryOpacity);
     props.setColor("secondary", value)
   }
 
-  const switchColorsHandler = () => {
+  const handleColorSwitch = () => {
     let [ primary, secondary ] = [ toRgba(primaryHex, primaryOpacity), toRgba(secondaryHex, secondaryOpacity) ];
     props.switchColors(secondary, primary)
   }
@@ -30,13 +30,13 @@ export default function ColorBox(props) {
       <p>Color</p>
       <label visible={true}>
         <div className="color-selector primary" title="Primary Color" style={{ background: primaryHex }} />
-        <input style={{display: "none"}} value={primaryHex} onChange={primaryColorHandler} type="color"/>
+        <input style={{display: "none"}} value={primaryHex} onChange={handlePrimaryColor} type="color"/>
       </label>
       <label visible={true}>
         <div className="color-selector secondary" title="Secondary Color" style={{ background: secondaryHex }} />
-        <input style={{display: "none"}} value={secondaryHex} onChange={secondaryColorHandler} type="color"/>
+        <input style={{display: "none"}} value={secondaryHex} onChange={handleSecondaryColor} type="color"/>
       </label>
-      <FontAwesomeIcon className={"color-switcher"} title="Switch Colors" icon={faSync} onClick={switchColorsHandler}/>
+      <FontAwesomeIcon className={"color-switcher"} title="Switch Colors" icon={faSync} onClick={handleColorSwitch}/>
     </div>
   )
 }

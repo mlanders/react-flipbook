@@ -1,9 +1,11 @@
 import React from "react";
 import draw from "../reducers/drawingReducer.js"
+import { addOpacity } from '../logic/colorConversion.js';
+
 
 class Canvas extends React.Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       isDrawing: false,
       urlArray: [],
@@ -20,15 +22,15 @@ class Canvas extends React.Component {
   }
 
   eyeDropper = (x, y, palette) => {
-    let color;
+    let selectedColor;
     const pixel = this.mainCtx.getImageData(x, y, 1, 1);
     const data = pixel.data;
-    color = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`;
-    if (color !== undefined) {
+    selectedColor = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`;
+    if (selectedColor !== undefined) {
       this.setState({
         colorSettings: {
           ...this.props.colorSettings,
-          [palette]: color
+          [palette]: selectedColor
         }
       })
     }
@@ -51,9 +53,13 @@ class Canvas extends React.Component {
   handleMouseMove = e => {
     if (!this.state.isDrawing) return;
     const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    const color = addOpacity(
+      this.props.colorSettings.primary,
+      this.props.toolSettings[this.props.activeTool].opacity
+    )
     this.stagingCtx.lineWidth = this.props.toolSettings[this.props.activeTool].width;
-    this.stagingCtx.strokeStyle = this.props.colorSettings.primary;
-    this.stagingCtx.fillStyle = this.props.colorSettings.primary;
+    this.stagingCtx.strokeStyle = color;
+    this.stagingCtx.fillStyle = color;
 
     let params = { orig: this.origin, dest: [ x, y ] };
     switch (this.props.activeTool) {
@@ -109,13 +115,17 @@ class Canvas extends React.Component {
     e.preventDefault();
     if (!this.state.isDrawing) return;
     const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    const color = addOpacity(
+      this.props.colorSettings.primary,
+      this.props.toolSettings[this.props.activeTool].opacity
+    )
     this.setState({
       isDrawing: false
     });
     this.stagingCtx.clearRect(0, 0, this.stagingCanvas.width, this.stagingCanvas.height)
     this.mainCtx.lineWidth = this.props.toolSettings[this.props.activeTool].width;
-    this.mainCtx.strokeStyle = this.props.colorSettings.primary;
-    this.mainCtx.fillStyle = this.props.colorSettings.primary;
+    this.mainCtx.strokeStyle = color;
+    this.mainCtx.fillStyle = color;
 
     let params = { orig: this.origin, dest: [ x, y ] };
     switch (this.props.activeTool) {

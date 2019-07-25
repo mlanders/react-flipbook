@@ -27,10 +27,9 @@ class App extends React.Component {
     };
   }
 
-  setActiveTool = e => {
-    e.preventDefault();
+  setActiveTool = (tool) => {
     this.setState({
-      activeTool: e.target.name
+      activeTool: tool
     });
   };
 
@@ -46,11 +45,11 @@ class App extends React.Component {
     });
   };
 
-  updateToolSettings = (tool, changes) => {
+  updateToolSettings = (tool, setting, value) => {
     this.setState({
       toolSettings: {
         ...this.state.toolSettings,
-        [tool]: { ...this.state.toolSettings[tool], changes }
+        [tool]: { ...this.state.toolSettings[tool], [setting]: value }
       }
     });
   };

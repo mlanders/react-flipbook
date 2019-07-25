@@ -57,6 +57,10 @@ label {
   outline: none;
 }
 
+.icon-wrapper {
+  pointer-events: none;
+}
+
 .color-settings {
   position: relative;
   height: 96px;
