@@ -5,7 +5,7 @@ class Canvas extends React.Component {
     super();
     this.state = {
       isDrawing: false,
-      hue: 0,
+      // hue: 0,
       urlArray: [],
       currentUrl: "",
       prevFrame: "",
@@ -36,11 +36,12 @@ class Canvas extends React.Component {
 
   handleMouseDown = e => {
     e.preventDefault();
-    const rect = this.canvas.getBoundingClientRect();
+    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
+    // const rect = this.canvas.getBoundingClientRect();
     this.setState({
       isDrawing: true
     });
-    this.origin = [e.nativeEvent.offsetX, e.nativeEvent.offsetY];
+    this.origin = [x, y];
     this.destArray = [];
     // this.lastX = e.clientX - rect.left;
     // this.lastY = e.clientY - rect.top;
@@ -51,18 +52,22 @@ class Canvas extends React.Component {
 
   handleMouseMove = e => {
     if (!this.state.isDrawing) return;
-    const rect = this.canvas.getBoundingClientRect();
-    this.ctx.strokeStyle = `hsl(${this.state.hue}, 100%, 0)`;
-    this.ctx.beginPath();
+    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
+    this.stagingCtx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
+    this.stagingCtx.strokeStyle = this.state.colorSettings.primary;
+    this.stagingCtx.fillStyle = this.state.colorSettings.primary;
+    // const rect = this.canvas.getBoundingClientRect();
+    // this.ctx.strokeStyle = `hsl(${this.state.hue}, 100%, 0)`;
+    // this.ctx.beginPath();
     // // start from
-    this.ctx.moveTo(this.lastX, this.lastY);
+    // this.ctx.moveTo(this.lastX, this.lastY);
     // go to
 
-    this.ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    this.ctx.stroke();
+    // this.ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    // this.ctx.stroke();
 
-    this.lastX = e.clientX - rect.left;
-    this.lastY = e.clientY - rect.top;
+    // this.lastX = e.clientX - rect.left;
+    // this.lastY = e.clientY - rect.top;
   };
 
   handleMouseUp = e => {
@@ -70,6 +75,9 @@ class Canvas extends React.Component {
     this.setState({
       isDrawing: false
     });
+    this.ctx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
+    this.ctx.strokeStyle = this.state.colorSettings.primary;
+    this.ctx.fillStyle = this.state.colorSettings.primary;
   };
 
   saveData = e => {
@@ -117,40 +125,38 @@ class Canvas extends React.Component {
       <>
         <div className="drawing">
           <h3>Drawing:</h3>{" "}
-          <canvas
-            width="200"
-            height="200"
-            ref={canvas => {
-              if (canvas) {
-                this.stagingCanvas = canvas;
-                this.stagingCtx = canvas.getContext("2d");
-                this.stagingCtx.lineJoin = "round";
-                this.stagingCtx.lineCap = "round";
-                this.stagingCtx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
-                this.stagingCtx.strokeStyle = this.state.colorSettings.primary;
-                this.stagingCtx.fillStyle = this.state.colorSettings.primary;
-              }
-            }}
-          />
-          <canvas
-            width="200"
-            height="200"
-            ref={canvas => {
-              if (canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext("2d");
-                this.ctx.lineJoin = "round";
-                this.ctx.lineCap = "round";
-                this.ctx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
-                this.ctx.strokeStyle = this.state.colorSettings.primary;
-                this.ctx.fillStyle = this.state.colorSettings.primary;
-              }
-            }}
-            onMouseDown={this.handleMouseDown}
-            onMouseMove={this.handleMouseMove}
-            onMouseUp={this.handleMouseUp}
-            onMouseOut={this.handleMouseUp}
-          />
+          <div style={{ position: "relative", width: "200px", height: "200px"}}>
+            <canvas
+              style={{ position: "absolute"}}
+              width="200"
+              height="200"
+              ref={canvas => {
+                if (canvas) {
+                  this.stagingCanvas = canvas;
+                  this.stagingCtx = canvas.getContext("2d");
+                  this.stagingCtx.lineJoin = "round";
+                  this.stagingCtx.lineCap = "round";
+                }
+              }}
+            />
+            <canvas
+              style={{ position: "absolute"}}
+              width="200"
+              height="200"
+              ref={canvas => {
+                if (canvas) {
+                  this.canvas = canvas;
+                  this.ctx = canvas.getContext("2d");
+                  this.ctx.lineJoin = "round";
+                  this.ctx.lineCap = "round";
+                }
+              }}
+              onMouseDown={this.handleMouseDown}
+              onMouseMove={this.handleMouseMove}
+              onMouseUp={this.handleMouseUp}
+              onMouseOut={this.handleMouseUp}
+            />
+          </div>
           <div className="buttons">
             <button onClick={this.saveData}>Add Frame</button>
             <button onClick={this.clearBook}>Clear Book</button>
@@ -167,10 +173,10 @@ class Canvas extends React.Component {
         </div>
         <div className="img-wrapper">
           <h3>Previous Frame:</h3>
-          <img src={this.state.prevFrame} />
+          <img alt="" src={this.state.prevFrame} />
         </div>
         <div className="img-wrapper">
-          <h3>Playing:</h3> <img src={this.state.currentUrl} />
+          <h3>Playing:</h3> <img alt="" src={this.state.currentUrl} />
         </div>
       </>
     );
