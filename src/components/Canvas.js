@@ -1,94 +1,155 @@
 import React from "react";
+import draw from "../reducers/drawingReducer.js"
 
 class Canvas extends React.Component {
   constructor(props) {
     super();
     this.state = {
       isDrawing: false,
-      // hue: 0,
       urlArray: [],
       currentUrl: "",
       prevFrame: "",
-      speed: 200,
-      colorSettings: {
-        primary: "rgba(0, 0, 0, 1)",
-        secondary: "rgba(255, 255, 255, 1)"
-      },
-      toolSettings: {
-        pencil: { name: "Pencil", width: 5, opacity: 1 },
-        line: { name: "Line", width: 5, opacity: 1 },
-        fillRect: { name: "Fill Rectangle", width: 5, opacity: 1 },
-        drawRect: { name: "Draw Rectangle", width: 5, opacity: 1 },
-        eraser: { name: "Eraser", width: 5, opacity: 0 },
-        eyeDropper: { name: "Eye Dropper", width: 0, opacity: "" },
-        move: { name: "Move", width: 0, opacity: "" }
-      },
-      activeTool: "pencil",
+      speed: 200
     };
     this.origin = [];
     this.destArray = [];
-    this.lastX = 0;
-    this.lastY = 0;
     this.stagingCanvas = {};
-    this.canvas = {};
-    this.ctx = {};
+    this.mainCanvas = {};
+    this.stagingCtx = {};
+    this.mainCtx = {};
+  }
+
+  eyeDropper = (x, y, palette) => {
+    let color;
+    const pixel = this.mainCtx.getImageData(x, y, 1, 1);
+    const data = pixel.data;
+    color = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`;
+    if (color !== undefined) {
+      this.setState({
+        colorSettings: {
+          ...this.props.colorSettings,
+          [palette]: color
+        }
+      })
+    }
   }
 
   handleMouseDown = e => {
     e.preventDefault();
-    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
-    // const rect = this.canvas.getBoundingClientRect();
+    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
     this.setState({
       isDrawing: true
     });
-    this.origin = [x, y];
-    this.destArray = [];
-    // this.lastX = e.clientX - rect.left;
-    // this.lastY = e.clientY - rect.top;
-    if (this.state.activeTool === "eyeDropper") {
-      
+    this.origin = [ x, y ];
+    this.destArray = [ x, y ];
+
+    if (this.props.activeTool === "eyeDropper") {
+      return this.eyeDropper(x, y, e.ctrlKey ? "secondary" : "primary")
     }
   };
 
   handleMouseMove = e => {
     if (!this.state.isDrawing) return;
-    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
-    this.stagingCtx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
-    this.stagingCtx.strokeStyle = this.state.colorSettings.primary;
-    this.stagingCtx.fillStyle = this.state.colorSettings.primary;
-    // const rect = this.canvas.getBoundingClientRect();
-    // this.ctx.strokeStyle = `hsl(${this.state.hue}, 100%, 0)`;
-    // this.ctx.beginPath();
-    // // start from
-    // this.ctx.moveTo(this.lastX, this.lastY);
-    // go to
+    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    this.stagingCtx.lineWidth = this.props.toolSettings[this.props.activeTool].width;
+    this.stagingCtx.strokeStyle = this.props.colorSettings.primary;
+    this.stagingCtx.fillStyle = this.props.colorSettings.primary;
 
-    // this.ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    // this.ctx.stroke();
+    let params = { orig: this.origin, dest: [ x, y ] };
+    switch (this.props.activeTool) {
+      case "pencil":
+        this.destArray = [...this.destArray, [ x, y ]];
+        this.origin = [ x, y ];
+        return draw(this.stagingCtx, { action: "drawLine", params })    
+                
+      case "line":
+        params = {
+          ...params,
+          clearFirst: true
+        }
+        return draw(this.stagingCtx, { action: "drawLine", params })    
+        
+      case "fillRect":
+        params = {
+          ...params,
+          clearFirst: true
+        }
+        return draw(this.stagingCtx, { action: "fillRect", params })
 
-    // this.lastX = e.clientX - rect.left;
-    // this.lastY = e.clientY - rect.top;
+      case "drawRect":
+        params = {
+          ...params,
+          clearFirst: true
+        }
+        return draw(this.stagingCtx, { action: "drawRect", params })
+
+      case "eraser":
+        params = {
+          ...params,
+          composite: "destination-out"
+        }
+        this.mainCtx.strokeStyle = "rgba(0, 0, 0, 1)";
+        this.mainCtx.lineWidth = this.props.toolSettings.eraser.width;
+        this.origin = [ x, y ]
+        return draw(this.mainCtx, { action: "drawLine", params })
+        
+      case "eyeDropper":
+        return this.eyeDropper(x, y, e.ctrlKey ? "secondary" : "primary");
+
+      case "move":
+        this.origin = [ x, y ];
+        return draw(this.mainCtx, { action: "move", params })
+          
+      default:
+        break;
+    }
   };
 
   handleMouseUp = e => {
     e.preventDefault();
+    if (!this.state.isDrawing) return;
+    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
     this.setState({
       isDrawing: false
     });
-    this.ctx.lineWidth = this.state.toolSettings[this.state.activeTool].width;
-    this.ctx.strokeStyle = this.state.colorSettings.primary;
-    this.ctx.fillStyle = this.state.colorSettings.primary;
+    this.stagingCtx.clearRect(0, 0, this.stagingCanvas.width, this.stagingCanvas.height)
+    this.mainCtx.lineWidth = this.props.toolSettings[this.props.activeTool].width;
+    this.mainCtx.strokeStyle = this.props.colorSettings.primary;
+    this.mainCtx.fillStyle = this.props.colorSettings.primary;
+
+    let params = { orig: this.origin, dest: [ x, y ] };
+    switch (this.props.activeTool) {
+      case "pencil":
+        params = {
+          ...params,
+          orig: this.destArray[0],
+          destArray: this.destArray
+        }
+        return draw(this.mainCtx, { action: "drawLineArray", params })    
+                
+      case "line":
+        return draw(this.mainCtx, { action: "drawLine", params })    
+        
+      case "fillRect":
+        return draw(this.mainCtx, { action: "fillRect", params })
+
+      case "drawRect":
+        return draw(this.mainCtx, { action: "drawRect", params })
+          
+      default:
+        break;
+    }
   };
 
   saveData = e => {
     e.preventDefault();
-    const url = this.canvas.toDataURL("image/png");
+    const url = this.mainCanvas.toDataURL("image/png");
     this.setState(
       prev => ({
         urlArray: [...prev.urlArray, url],
         prevFrame: url
       }),
-      () => this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      () => this.mainCtx.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height)
     );
   };
 
@@ -125,9 +186,8 @@ class Canvas extends React.Component {
       <>
         <div className="drawing">
           <h3>Drawing:</h3>{" "}
-          <div style={{ position: "relative", width: "200px", height: "200px"}}>
+          <div style={{ position: "relative", width: "200px", height: "200px", marginBottom: "5px"}}>
             <canvas
-              style={{ position: "absolute"}}
               width="200"
               height="200"
               ref={canvas => {
@@ -140,15 +200,14 @@ class Canvas extends React.Component {
               }}
             />
             <canvas
-              style={{ position: "absolute"}}
               width="200"
               height="200"
               ref={canvas => {
                 if (canvas) {
-                  this.canvas = canvas;
-                  this.ctx = canvas.getContext("2d");
-                  this.ctx.lineJoin = "round";
-                  this.ctx.lineCap = "round";
+                  this.mainCanvas = canvas;
+                  this.mainCtx = canvas.getContext("2d");
+                  this.mainCtx.lineJoin = "round";
+                  this.mainCtx.lineCap = "round";
                 }
               }}
               onMouseDown={this.handleMouseDown}
