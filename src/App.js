@@ -78,6 +78,7 @@ class App extends React.Component {
           colorSettings={this.state.colorSettings}
           toolSettings={this.state.toolSettings}
           activeTool={this.state.activeTool}
+          setColor={this.setColor}
         />
       </div>
     );

@@ -27,12 +27,7 @@ class Canvas extends React.Component {
     const data = pixel.data;
     selectedColor = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${(data[3] / 255)})`;
     if (selectedColor !== undefined) {
-      this.setState({
-        colorSettings: {
-          ...this.props.colorSettings,
-          [palette]: selectedColor
-        }
-      })
+      this.props.setColor(palette, selectedColor)
     }
   }
 

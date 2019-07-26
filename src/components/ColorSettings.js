@@ -28,11 +28,11 @@ export default function ColorBox(props) {
   return (
     <div className="color-settings">
       <p>Color</p>
-      <label visible={true}>
+      <label visible>
         <div className="color-selector primary" title="Primary Color" style={{ background: primaryHex }} />
         <input style={{display: "none"}} value={primaryHex} onChange={handlePrimaryColor} type="color"/>
       </label>
-      <label visible={true}>
+      <label visible>
         <div className="color-selector secondary" title="Secondary Color" style={{ background: secondaryHex }} />
         <input style={{display: "none"}} value={secondaryHex} onChange={handleSecondaryColor} type="color"/>
       </label>
