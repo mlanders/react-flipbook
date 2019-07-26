@@ -27,8 +27,107 @@
 
 canvas {
   border: 1px solid black;
+  position: absolute;
 }
 
 img {
   border: 1px solid black;
+}
+
+label {
+  font-size: 14px;
+}
+
+.settings-box {
+  width: 150px;
+  margin: 20px;
+}
+
+.tool-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px;
+  margin-right: 0;
+  width: 50px;
+}
+
+.tool-button {
+  height: 40px;
+  outline: none;
+}
+
+.icon-wrapper {
+  pointer-events: none;
+}
+
+.color-settings {
+  position: relative;
+  height: 96px;
+}
+
+.color-settings p {
+  margin: 0 0 5px;
+  padding: 3px 0;
+  border-bottom: 1px dotted black;
+}
+
+.color-selector {
+  position: absolute;
+  width: 40px;
+  height: 28px;
+  border: 1px solid black;
+  display: block;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.color-selector.primary {
+  left: 30px;
+  bottom: 26px;
+}
+
+.color-selector.secondary {
+  left: 52px;
+  bottom: 10px;
+}
+
+.color-switcher {
+  position: absolute;
+  left: 77px;
+  bottom: 43px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tool-settings {
+  margin-bottom: 10px;
+}
+
+.tool-settings p {
+  margin: 0 0 5px;
+  padding: 3px 0;
+  border-bottom: 1px dotted black;
+}
+
+.tool-settings label {
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+}
+
+.width-picker {
+  margin: 0 0 6px;
+  padding: 3px 0;
+  width: 35%;
+}
+
+.opacity-slider {
+  margin-top: 3px;
+  width: 80%;
+}
+
+.opacity-picker {
+  padding: 3px 0;
+  width: 35%;
 }
