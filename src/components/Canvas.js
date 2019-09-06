@@ -33,12 +33,12 @@ class Canvas extends React.Component {
 
   handleMouseDown = e => {
     e.preventDefault();
-    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
     this.setState({
       isDrawing: true
     });
-    this.origin = [ x, y ];
-    this.destArray = [ x, y ];
+    this.origin = [x, y];
+    this.destArray = [x, y];
 
     if (this.props.activeTool === "eyeDropper") {
       return this.eyeDropper(x, y, e.ctrlKey ? "secondary" : "primary")
@@ -47,7 +47,7 @@ class Canvas extends React.Component {
 
   handleMouseMove = e => {
     if (!this.state.isDrawing) return;
-    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
     const color = addOpacity(
       this.props.colorSettings.primary,
       this.props.toolSettings[this.props.activeTool].opacity
@@ -56,20 +56,20 @@ class Canvas extends React.Component {
     this.stagingCtx.strokeStyle = color;
     this.stagingCtx.fillStyle = color;
 
-    let params = { orig: this.origin, dest: [ x, y ] };
+    let params = { orig: this.origin, dest: [x, y] };
     switch (this.props.activeTool) {
       case "pencil":
-        this.destArray = [...this.destArray, [ x, y ]];
-        this.origin = [ x, y ];
-        return draw(this.stagingCtx, { action: "drawLine", params })    
-                
+        this.destArray = [...this.destArray, [x, y]];
+        this.origin = [x, y];
+        return draw(this.stagingCtx, { action: "drawLine", params })
+
       case "line":
         params = {
           ...params,
           clearFirst: true
         }
-        return draw(this.stagingCtx, { action: "drawLine", params })    
-        
+        return draw(this.stagingCtx, { action: "drawLine", params })
+
       case "fillRect":
         params = {
           ...params,
@@ -91,16 +91,16 @@ class Canvas extends React.Component {
         }
         this.mainCtx.strokeStyle = "rgba(0, 0, 0, 1)";
         this.mainCtx.lineWidth = this.props.toolSettings.eraser.width;
-        this.origin = [ x, y ]
+        this.origin = [x, y]
         return draw(this.mainCtx, { action: "drawLine", params })
-        
+
       case "eyeDropper":
         return this.eyeDropper(x, y, e.ctrlKey ? "secondary" : "primary");
 
       case "move":
-        this.origin = [ x, y ];
+        this.origin = [x, y];
         return draw(this.mainCtx, { action: "move", params })
-          
+
       default:
         break;
     }
@@ -109,7 +109,7 @@ class Canvas extends React.Component {
   handleMouseUp = e => {
     e.preventDefault();
     if (!this.state.isDrawing) return;
-    const [ x, y ] = [ e.nativeEvent.offsetX, e.nativeEvent.offsetY ]
+    const [x, y] = [e.nativeEvent.offsetX, e.nativeEvent.offsetY]
     const color = addOpacity(
       this.props.colorSettings.primary,
       this.props.toolSettings[this.props.activeTool].opacity
@@ -122,7 +122,7 @@ class Canvas extends React.Component {
     this.mainCtx.strokeStyle = color;
     this.mainCtx.fillStyle = color;
 
-    let params = { orig: this.origin, dest: [ x, y ] };
+    let params = { orig: this.origin, dest: [x, y] };
     switch (this.props.activeTool) {
       case "pencil":
         params = {
@@ -130,17 +130,17 @@ class Canvas extends React.Component {
           orig: this.destArray[0],
           destArray: this.destArray
         }
-        return draw(this.mainCtx, { action: "drawLineArray", params })    
-                
+        return draw(this.mainCtx, { action: "drawLineArray", params })
+
       case "line":
-        return draw(this.mainCtx, { action: "drawLine", params })    
-        
+        return draw(this.mainCtx, { action: "drawLine", params })
+
       case "fillRect":
         return draw(this.mainCtx, { action: "fillRect", params })
 
       case "drawRect":
         return draw(this.mainCtx, { action: "drawRect", params })
-          
+
       default:
         break;
     }
@@ -189,58 +189,63 @@ class Canvas extends React.Component {
   render() {
     return (
       <>
-        <div className="drawing">
-          <h3>Drawing:</h3>{" "}
-          <div style={{ position: "relative", width: "200px", height: "200px", marginBottom: "5px"}}>
-            <canvas
-              width="200"
-              height="200"
-              ref={canvas => {
-                if (canvas) {
-                  this.stagingCanvas = canvas;
-                  this.stagingCtx = canvas.getContext("2d");
-                  this.stagingCtx.lineJoin = "round";
-                  this.stagingCtx.lineCap = "round";
-                }
-              }}
-            />
-            <canvas
-              width="200"
-              height="200"
-              ref={canvas => {
-                if (canvas) {
-                  this.mainCanvas = canvas;
-                  this.mainCtx = canvas.getContext("2d");
-                  this.mainCtx.lineJoin = "round";
-                  this.mainCtx.lineCap = "round";
-                }
-              }}
-              onMouseDown={this.handleMouseDown}
-              onMouseMove={this.handleMouseMove}
-              onMouseUp={this.handleMouseUp}
-              onMouseOut={this.handleMouseUp}
-            />
+        <div className='box box-wide'>
+          <div className="drawing">
+            <h3>Drawing:</h3>{" "}
+            <div style={{ position: "relative", width: "200px", height: "200px", marginBottom: "5px" }}>
+              <canvas
+                width="200"
+                height="200"
+                ref={canvas => {
+                  if (canvas) {
+                    this.stagingCanvas = canvas;
+                    this.stagingCtx = canvas.getContext("2d");
+                    this.stagingCtx.lineJoin = "round";
+                    this.stagingCtx.lineCap = "round";
+                  }
+                }}
+              />
+              <canvas
+                width="200"
+                height="200"
+                ref={canvas => {
+                  if (canvas) {
+                    this.mainCanvas = canvas;
+                    this.mainCtx = canvas.getContext("2d");
+                    this.mainCtx.lineJoin = "round";
+                    this.mainCtx.lineCap = "round";
+                  }
+                }}
+                onMouseDown={this.handleMouseDown}
+                onMouseMove={this.handleMouseMove}
+                onMouseUp={this.handleMouseUp}
+                onMouseOut={this.handleMouseUp}
+              />
+            </div>
+            <div className="buttons">
+              <div>
+                <button onClick={this.saveData}>Add Frame</button>
+                <button onClick={this.clearBook}>Clear Book</button>
+              </div>
+
+              <button onClick={this.playFlipbook}>Play</button>
+              <p>Delay time: <input
+                type="range"
+                min="20"
+                max="1000"
+                value={this.state.speed}
+                onChange={this.changeSpeed}
+              /></p>
+
+            </div>
           </div>
-          <div className="buttons">
-            <button onClick={this.saveData}>Add Frame</button>
-            <button onClick={this.clearBook}>Clear Book</button>
-            <button onClick={this.playFlipbook}>Play</button>
-            <p>Delay time:</p>
-            <input
-              type="range"
-              min="20"
-              max="1000"
-              value={this.state.speed}
-              onChange={this.changeSpeed}
-            />
+          <div className="img-wrapper">
+            <h3>Previous Frame:</h3>
+            <img alt="" src={this.state.prevFrame} />
           </div>
-        </div>
-        <div className="img-wrapper">
-          <h3>Previous Frame:</h3>
-          <img alt="" src={this.state.prevFrame} />
-        </div>
-        <div className="img-wrapper">
-          <h3>Playing:</h3> <img alt="" src={this.state.currentUrl} />
+          <div className={`img-wrapper ${this.state.currentUrl === '' && "hidden"}`} >
+            <h3>Playing:</h3> <img alt="" src={this.state.currentUrl} />
+          </div>
         </div>
       </>
     );

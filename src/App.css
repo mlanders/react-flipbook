@@ -1,7 +1,10 @@
 .App {
   display: flex;
   flex-wrap: wrap;
-  width: 900px;
+  width: 100%;
+}
+h3{
+  margin-top: 0px;
 }
 
 .App-logo {
@@ -37,12 +40,48 @@ img {
 label {
   font-size: 14px;
 }
+.buttons{
+  display:flex;
+  flex-direction: column;
+}
+button{
+  outline: none;
+  font-size: 12px;
+  padding:5px;
+  margin: 5px 5px 0 0;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+}
+button:hover{
+  background-color: #4281A4;
+  color:#fff;
+  cursor: pointer;
+}
 
 .settings-box {
   width: 150px;
   margin: 20px;
-}
 
+}
+.box-wide{
+  margin: 20px 20px 20px 0;
+  display:flex;
+}
+.box{
+  border: 1px solid #E5E5E5;
+  border-radius: 4px;
+  box-shadow: -2px 0px 5px 0px #E5E5E5, 
+  2px 2px 5px 0px #E5E5E5;
+  padding: 10px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+
+}
 .tool-box {
   display: flex;
   flex-wrap: wrap;
@@ -53,8 +92,14 @@ label {
 }
 
 .tool-button {
-  height: 40px;
+  box-sizing: border-box;
   outline: none;
+  font-size: 15px;
+  height: auto;
+  width: 40px;
+  padding: 10px;
+  margin: 0 0 5px 0;
+  cursor: pointer;
 }
 
 .icon-wrapper {
@@ -130,4 +175,13 @@ label {
 .opacity-picker {
   padding: 3px 0;
   width: 35%;
+}
+
+.img-wrapper{
+  width:202px;
+  margin: 0 15px;
+}
+
+.hidden{
+  display:none
 }

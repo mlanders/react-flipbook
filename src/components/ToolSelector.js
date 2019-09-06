@@ -10,7 +10,7 @@ import {
 
 export default function ToolBox(props) {
   const isActive = name => {
-    return props.activeTool === name ? "yellow" : "#e3e3e3";
+    return props.activeTool === name ? "#4281A4" : "#e3e3e3";
   };
 
   const handleClick = e => {
@@ -19,7 +19,7 @@ export default function ToolBox(props) {
   }
 
   return (
-    <div className="tool-box">
+    <div className="tool-box box">
       <button
         style={{
           background: isActive("pencil"),

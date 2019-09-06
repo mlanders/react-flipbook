@@ -61,14 +61,14 @@ class App extends React.Component {
           setActiveTool={this.setActiveTool}
           activeTool={this.state.activeTool}
         />
-        <div className="settings-box">
+        <div className="settings-box box">
           <ColorSettings
             setColor={this.setColor}
             switchColors={this.switchColors}
             primaryRgba={this.state.colorSettings.primary}
             secondaryRgba={this.state.colorSettings.secondary}
           />
-          <ToolSettings 
+          <ToolSettings
             updateToolSettings={this.updateToolSettings}
             toolSettings={this.state.toolSettings}
             activeTool={this.state.activeTool}
